@@ -2,131 +2,156 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0">
 <title>Intervalos de Confiança — Guia Interativo para Medicina</title>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{-webkit-text-size-adjust:100%;text-size-adjust:100%}
 :root{
   --blue:#1a6b9a;--blue-dk:#0d4f7a;--blue-lt:#e8f4fd;
   --green:#27ae60;--red:#e74c3c;--orange:#f39c12;--purple:#8e44ad;
   --bg:#f0f4f8;--white:#fff;--border:#dde3ea;--text:#2c3e50;--muted:#7f8c8d;
 }
-body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65}
+body{font-family:'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);line-height:1.65;-webkit-font-smoothing:antialiased}
+
 /* ── HEADER ── */
-.hdr{background:linear-gradient(135deg,var(--blue-dk),#2980b9);color:#fff;padding:2.2rem 1rem 1.8rem;text-align:center}
-.hdr h1{font-size:clamp(1.5rem,4vw,2.2rem);margin:.4rem 0 .5rem}
-.hdr p{opacity:.87;font-size:clamp(.9rem,2.5vw,1.05rem);max-width:640px;margin:0 auto}
-.hdr-badges{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
-.hdr-badge{background:rgba(255,255,255,.18);padding:.25rem .8rem;border-radius:20px;font-size:.8rem;font-weight:600}
+.hdr{background:linear-gradient(135deg,var(--blue-dk),#2980b9);color:#fff;padding:2rem 1rem 1.6rem;text-align:center}
+.hdr h1{font-size:clamp(1.35rem,5vw,2.1rem);margin:.4rem 0 .5rem}
+.hdr p{opacity:.87;font-size:clamp(.85rem,3vw,1.05rem);max-width:640px;margin:0 auto}
+.hdr-badges{display:flex;justify-content:center;gap:.5rem;flex-wrap:wrap;margin-top:.9rem}
+.hdr-badge{background:rgba(255,255,255,.18);padding:.22rem .75rem;border-radius:20px;font-size:.78rem;font-weight:600}
+@media(max-width:480px){.hdr{padding:1.3rem .8rem 1rem}.hdr-badges{display:none}}
+
 /* ── NAV ── */
-nav{background:var(--white);border-bottom:2px solid var(--border);display:flex;justify-content:center;overflow-x:auto;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.08);scrollbar-width:none}
+nav{background:var(--white);border-bottom:2px solid var(--border);display:flex;justify-content:center;overflow-x:auto;position:sticky;top:0;z-index:100;box-shadow:0 2px 8px rgba(0,0,0,.08);scrollbar-width:none;-webkit-overflow-scrolling:touch}
 nav::-webkit-scrollbar{display:none}
-nav button{flex-shrink:0;padding:.85rem 1.1rem;border:none;background:none;cursor:pointer;font-size:.88rem;font-weight:500;color:var(--muted);border-bottom:3px solid transparent;transition:all .2s;white-space:nowrap;text-align:center}
-nav button:hover{color:var(--blue);background:var(--blue-lt)}
+nav button{flex-shrink:0;padding:.82rem 1.1rem;border:none;background:none;cursor:pointer;font-size:.88rem;font-weight:500;color:var(--muted);border-bottom:3px solid transparent;transition:color .15s,background .15s;white-space:nowrap;text-align:center;min-height:48px;touch-action:manipulation}
+nav button:hover,nav button:focus-visible{color:var(--blue);background:var(--blue-lt);outline:none}
 nav button.active{color:var(--blue);border-bottom-color:var(--blue);font-weight:700}
+@media(max-width:600px){nav{justify-content:flex-start}nav button{padding:.72rem .8rem;font-size:.8rem}}
+
 /* ── SECTIONS ── */
-.sec{display:none;padding:1.5rem 1rem 3rem;max-width:900px;margin:0 auto}
+.sec{display:none;padding:1.4rem .9rem 3rem;max-width:900px;margin:0 auto}
 .sec.active{display:block}
+@media(max-width:480px){.sec{padding:1rem .7rem 2.5rem}}
+
 /* ── CARDS ── */
-.card{background:var(--white);border-radius:12px;padding:1.4rem;margin-bottom:1.2rem;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid var(--border)}
+.card{background:var(--white);border-radius:12px;padding:1.4rem;margin-bottom:1rem;box-shadow:0 2px 10px rgba(0,0,0,.06);border:1px solid var(--border)}
+@media(max-width:480px){.card{padding:.95rem .85rem;border-radius:10px;margin-bottom:.85rem}}
 .card-blue{border-top:4px solid var(--blue)}.card-green{border-top:4px solid var(--green)}
 .card-orange{border-top:4px solid var(--orange)}.card-red{border-top:4px solid var(--red)}.card-purple{border-top:4px solid var(--purple)}
-h2.ct{color:var(--blue);font-size:1.18rem;margin-bottom:.75rem;display:flex;align-items:center;gap:.45rem}
-h3.st{color:var(--text);font-size:.98rem;margin:1rem 0 .4rem;font-weight:600}
+h2.ct{color:var(--blue);font-size:clamp(1rem,3.5vw,1.18rem);margin-bottom:.72rem;display:flex;align-items:center;gap:.42rem}
+h3.st{color:var(--text);font-size:.96rem;margin:1rem 0 .4rem;font-weight:600}
+
 /* ── FORMULA ── */
-.fml{background:#f5f8fc;border-left:4px solid var(--blue);padding:.85rem 1.1rem;border-radius:0 8px 8px 0;font-family:'Courier New',monospace;font-size:.97rem;margin:.6rem 0;color:var(--blue-dk);overflow-x:auto;line-height:1.9}
-.fml .cmt{color:var(--muted);font-style:italic;font-size:.83rem}
-/* ── GRID / INPUTS ── */
+.fml{background:#f5f8fc;border-left:4px solid var(--blue);padding:.85rem 1rem;border-radius:0 8px 8px 0;font-family:'Courier New',monospace;font-size:clamp(.78rem,2.6vw,.95rem);margin:.6rem 0;color:var(--blue-dk);overflow-x:auto;-webkit-overflow-scrolling:touch;line-height:1.9}
+.fml .cmt{color:var(--muted);font-style:italic;font-size:.82rem}
+
+/* ── GRIDS / INPUTS ── */
 .g2{display:grid;grid-template-columns:1fr 1fr;gap:.85rem}
 .g3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:.85rem}
 @media(max-width:580px){.g2,.g3{grid-template-columns:1fr}}
-.ig{margin-bottom:.7rem}
+.ig{margin-bottom:.72rem}
 .ig label{display:block;font-size:.84rem;font-weight:600;margin-bottom:.32rem}
 .ig label .sub{font-weight:400;color:var(--muted);font-size:.78rem}
-.ig input[type=number],.ig select{width:100%;padding:.52rem .75rem;border:2px solid var(--border);border-radius:8px;font-size:.97rem;outline:none;transition:border-color .2s}
+.ig input[type=number],.ig select{
+  width:100%;padding:.6rem .75rem;
+  border:2px solid var(--border);border-radius:8px;
+  font-size:16px;font-family:inherit;
+  outline:none;transition:border-color .2s;
+  background:var(--white);color:var(--text)
+}
 .ig input[type=number]:focus,.ig select:focus{border-color:var(--blue)}
-.ig .hint{font-size:.76rem;color:var(--muted);margin-top:.18rem}
-.ig input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer}
+.ig .hint{font-size:.75rem;color:var(--muted);margin-top:.18rem}
+.ig input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer;height:20px;touch-action:manipulation}
 .rval{display:inline-block;background:var(--blue-lt);color:var(--blue);padding:.1rem .5rem;border-radius:20px;font-size:.82rem;font-weight:700;margin-left:.4rem;min-width:3rem;text-align:center}
+
 /* ── BUTTONS ── */
-.btn{display:block;width:100%;padding:.72rem 1.5rem;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:.97rem;font-weight:600;cursor:pointer;transition:background .2s;margin-top:.5rem}
+.btn{display:block;width:100%;padding:.78rem 1.5rem;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:1rem;font-family:inherit;font-weight:600;cursor:pointer;transition:background .2s,opacity .1s;margin-top:.5rem;min-height:48px;touch-action:manipulation;letter-spacing:.01em}
 .btn:hover{background:var(--blue-dk)}
+.btn:active{opacity:.82}
 .btn-green{background:var(--green)}.btn-green:hover{background:#1e8449}
 .btn-orange{background:var(--orange)}.btn-orange:hover{background:#d68910}
 .btn-inline{width:auto;display:inline-block;padding:.42rem 1.1rem;font-size:.88rem;margin-top:0}
+
 /* ── RESULTS ── */
 .rbox{display:none;background:linear-gradient(135deg,#e8f5fd,#e3f2fb);border:2px solid var(--blue);border-radius:12px;padding:1.2rem;margin-top:.9rem}
-.rhl{font-size:1.5rem;font-weight:700;color:var(--blue);text-align:center;margin-bottom:.2rem}
-.rsub{text-align:center;color:var(--muted);font-size:.88rem;margin-bottom:.9rem}
-.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:.65rem;margin:.65rem 0}
-.ri{background:#fff;border-radius:8px;padding:.7rem .5rem;text-align:center;border:1px solid var(--border)}
-.ri .rv{font-size:1.15rem;font-weight:700;color:var(--blue)}
-.ri .rl{font-size:.72rem;color:var(--muted);margin-top:.15rem}
+.rhl{font-size:clamp(1rem,4vw,1.45rem);font-weight:700;color:var(--blue);text-align:center;margin-bottom:.22rem;word-break:break-word;line-height:1.35}
+.rsub{text-align:center;color:var(--muted);font-size:.86rem;margin-bottom:.85rem;word-break:break-word}
+.rgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(95px,1fr));gap:.5rem;margin:.6rem 0}
+.ri{background:#fff;border-radius:8px;padding:.65rem .4rem;text-align:center;border:1px solid var(--border)}
+.ri .rv{font-size:1.05rem;font-weight:700;color:var(--blue)}
+.ri .rl{font-size:.68rem;color:var(--muted);margin-top:.14rem}
+
 /* ── CANVAS ── */
-.cvwrap{margin:.9rem 0;overflow:hidden;border-radius:8px}
+.cvwrap{margin:.85rem 0;border-radius:8px;overflow:hidden}
 canvas.cib{display:block;width:100%;border-radius:8px;background:#fafbfc}
+
 /* ── INTERPRETATION ── */
-.interp{background:#fffde7;border-left:4px solid var(--orange);padding:.9rem 1.1rem;border-radius:0 8px 8px 0;font-size:.91rem;margin-top:.75rem}
+.interp{background:#fffde7;border-left:4px solid var(--orange);padding:.85rem 1.05rem;border-radius:0 8px 8px 0;font-size:.9rem;margin-top:.72rem;line-height:1.6}
 .interp b{color:#7d5a0a}
-.verdict{display:inline-block;padding:.18rem .65rem;border-radius:20px;font-weight:700;font-size:.82rem;margin-left:.3rem}
+.verdict{display:inline-block;padding:.16rem .6rem;border-radius:20px;font-weight:700;font-size:.8rem;margin-left:.3rem}
 .v-sig{background:#fce4e4;color:#c0392b}.v-ns{background:#e8f5e9;color:#1e8449}
+
 /* ── INFO BOXES ── */
-.info{background:var(--blue-lt);border-radius:8px;padding:.85rem 1.05rem;font-size:.89rem;margin:.65rem 0}
-.info .it{font-weight:700;color:var(--blue);margin-bottom:.28rem}
-.warn{background:#fff8e1;border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:.7rem .95rem;font-size:.87rem;color:#7d5a0a;margin:.6rem 0}
-.succ{background:#e8f5e9;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:.7rem .95rem;font-size:.87rem;color:#1a5e30;margin:.6rem 0}
+.info{background:var(--blue-lt);border-radius:8px;padding:.82rem 1rem;font-size:.88rem;margin:.62rem 0}
+.info .it{font-weight:700;color:var(--blue);margin-bottom:.26rem}
+.warn{background:#fff8e1;border-left:3px solid var(--orange);border-radius:0 8px 8px 0;padding:.68rem .9rem;font-size:.86rem;color:#7d5a0a;margin:.58rem 0}
+.succ{background:#e8f5e9;border-left:3px solid var(--green);border-radius:0 8px 8px 0;padding:.68rem .9rem;font-size:.86rem;color:#1a5e30;margin:.58rem 0}
+
 /* ── CONCEPT BOXES ── */
-.cbox-row{display:flex;gap:.9rem;flex-wrap:wrap;margin:.9rem 0}
-.cbox{flex:1;min-width:165px;border-radius:10px;padding:1.05rem;border:1px solid var(--border);text-align:center;background:#fff}
-.cbox .ico{font-size:1.7rem;margin-bottom:.35rem}
-.cbox h4{font-size:.92rem;color:var(--blue);margin-bottom:.25rem}
-.cbox p{font-size:.8rem;color:var(--muted)}
+.cbox-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:.75rem;margin:.85rem 0}
+.cbox{border-radius:10px;padding:1rem .82rem;border:1px solid var(--border);text-align:center;background:#fff}
+.cbox .ico{font-size:1.55rem;margin-bottom:.3rem}
+.cbox h4{font-size:.88rem;color:var(--blue);margin-bottom:.22rem}
+.cbox p{font-size:.78rem;color:var(--muted);line-height:1.4}
+
 /* ── SIMULATION ── */
 #simCanvas{display:block;width:100%;border:1px solid var(--border);border-radius:8px;background:#fafbfc}
-.sim-stats{display:flex;gap:.7rem;flex-wrap:wrap;margin-top:.75rem}
-.sstat{flex:1;min-width:95px;background:#fff;border-radius:8px;padding:.85rem .5rem;text-align:center;border:2px solid var(--border)}
-.sstat .sv{font-size:1.55rem;font-weight:700}
-.sstat .sl{font-size:.72rem;color:var(--muted);margin-top:.12rem}
+.sim-stats{display:grid;grid-template-columns:repeat(4,1fr);gap:.6rem;margin-top:.72rem}
+@media(max-width:400px){.sim-stats{grid-template-columns:repeat(2,1fr)}}
+.sstat{background:#fff;border-radius:8px;padding:.8rem .4rem;text-align:center;border:2px solid var(--border)}
+.sstat .sv{font-size:1.4rem;font-weight:700}
+.sstat .sl{font-size:.67rem;color:var(--muted);margin-top:.1rem}
 .sv-g{color:var(--green)}.sv-r{color:var(--red)}.sv-b{color:var(--blue)}
+
 /* ── TABLE ── */
-table.ztab{width:100%;border-collapse:collapse;font-size:.88rem;margin:.5rem 0}
-table.ztab th{background:var(--blue);color:#fff;padding:.5rem .7rem;text-align:left}
-table.ztab td{padding:.42rem .7rem;border-bottom:1px solid var(--border)}
+.ztab-wrap{overflow-x:auto;-webkit-overflow-scrolling:touch;margin:.5rem 0;border-radius:8px}
+table.ztab{width:100%;border-collapse:collapse;font-size:.85rem;min-width:360px}
+table.ztab th{background:var(--blue);color:#fff;padding:.5rem .65rem;text-align:left;white-space:nowrap}
+table.ztab td{padding:.4rem .65rem;border-bottom:1px solid var(--border);white-space:nowrap}
 table.ztab tr:nth-child(even) td{background:#f5f8fc}
 table.ztab tr.hl td{background:#fff8e1;font-weight:700}
+
 /* ── STEPS ── */
 ol.steps{padding:0;list-style:none;counter-reset:step}
-ol.steps li{counter-increment:step;padding:.6rem .6rem .6rem 2.8rem;position:relative;border-bottom:1px solid var(--border);font-size:.9rem}
+ol.steps li{counter-increment:step;padding:.62rem .5rem .62rem 2.7rem;position:relative;border-bottom:1px solid var(--border);font-size:.88rem;line-height:1.5}
 ol.steps li:last-child{border-bottom:none}
-ol.steps li::before{content:counter(step);position:absolute;left:0;top:.6rem;width:1.9rem;height:1.9rem;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.83rem}
-/* ── DIVIDER ── */
-hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
-/* ── BADGE ── */
-.badge{display:inline-block;padding:.14rem .55rem;border-radius:20px;font-size:.76rem;font-weight:600}
-.b-blue{background:#d6eaf8;color:#1a5276}.b-green{background:#d5f5e3;color:#1e8449}
-.b-red{background:#fadbd8;color:#922b21}.b-orange{background:#fef9e7;color:#7d6608}
-.b-purple{background:#f3e5f5;color:#6a1b9a}
-/* ── STEP DETAIL ROWS ── */
-.sdr{display:flex;justify-content:space-between;padding:.32rem 0;border-bottom:1px dashed #e8e8e8;font-size:.89rem}
-.sdr:last-child{border-bottom:none}
-.sdr .sdv{font-weight:700;color:var(--blue)}
+ol.steps li::before{content:counter(step);position:absolute;left:0;top:.58rem;width:1.85rem;height:1.85rem;background:var(--blue);color:#fff;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:.8rem}
+
 /* ── CONCEPT EXPLORER ── */
 #exCanvas{display:block;width:100%;border-radius:8px;background:#fafbfc}
+
 /* ── MISC ── */
 .two-col{display:grid;grid-template-columns:1fr 1fr;gap:1rem}
 @media(max-width:580px){.two-col{grid-template-columns:1fr}}
-.note{font-size:.82rem;color:var(--muted);font-style:italic;margin-top:.3rem}
+.note{font-size:.8rem;color:var(--muted);font-style:italic;margin-top:.3rem}
+hr.dv{border:none;border-top:2px dashed var(--border);margin:1.2rem 0}
+.badge{display:inline-block;padding:.13rem .52rem;border-radius:20px;font-size:.75rem;font-weight:600}
+.b-blue{background:#d6eaf8;color:#1a5276}.b-green{background:#d5f5e3;color:#1e8449}
+.b-red{background:#fadbd8;color:#922b21}.b-orange{background:#fef9e7;color:#7d6608}
+.b-purple{background:#f3e5f5;color:#6a1b9a}
 .tag-row{display:flex;gap:.4rem;flex-wrap:wrap;margin:.5rem 0}
 </style>
 </head>
 <body>
 
 <div class="hdr">
-  <div>📊</div>
+  <div style="font-size:2rem">📊</div>
   <h1>Intervalos de Confiança</h1>
   <p>Guia interativo e simulador para estudantes de medicina e ciências da saúde</p>
   <div class="hdr-badges">
-    <span class="hdr-badge">🎓 Medicina Baseada em Evidências</span>
+    <span class="hdr-badge">🎓 Pesquisa Clínica</span>
     <span class="hdr-badge">📐 Bioestatística</span>
     <span class="hdr-badge">🔬 Epidemiologia</span>
   </div>
@@ -146,7 +171,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
   <div class="card card-blue">
     <h2 class="ct">🎯 O que é um Intervalo de Confiança?</h2>
     <p>Na medicina, raramente conseguimos estudar <em>toda</em> a população. Trabalhamos com <strong>amostras</strong>. O intervalo de confiança (IC) é a ferramenta que nos permite ir além do dado amostral e estimar o valor <strong>verdadeiro na população</strong>.</p>
-    <div class="info" style="margin-top:.9rem">
+    <div class="info" style="margin-top:.85rem">
       <div class="it">💡 Definição em linguagem simples</div>
       Um intervalo de confiança de 95% significa: <em>"Se repetíssemos este estudo inúmeras vezes, 95% dos intervalos construídos dessa forma conteriam o verdadeiro valor populacional."</em>
     </div>
@@ -158,26 +183,10 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
   <div class="card">
     <h2 class="ct">🧩 Componentes de um IC</h2>
     <div class="cbox-row">
-      <div class="cbox">
-        <div class="ico">🎯</div>
-        <h4>Estimativa Pontual</h4>
-        <p>O valor calculado na amostra (ex.: proporção observada p̂)</p>
-      </div>
-      <div class="cbox">
-        <div class="ico">↔️</div>
-        <h4>Margem de Erro</h4>
-        <p>Raio do intervalo = z × EP. Quanto menor, mais preciso</p>
-      </div>
-      <div class="cbox">
-        <div class="ico">🔒</div>
-        <h4>Nível de Confiança</h4>
-        <p>Geralmente 95%. Define o valor crítico z</p>
-      </div>
-      <div class="cbox">
-        <div class="ico">📏</div>
-        <h4>Erro-Padrão (EP)</h4>
-        <p>Mede a variabilidade amostral. Depende de n e da dispersão</p>
-      </div>
+      <div class="cbox"><div class="ico">🎯</div><h4>Estimativa Pontual</h4><p>O valor calculado na amostra (ex.: proporção observada p̂)</p></div>
+      <div class="cbox"><div class="ico">↔️</div><h4>Margem de Erro</h4><p>Raio do intervalo = z × EP. Quanto menor, mais preciso</p></div>
+      <div class="cbox"><div class="ico">🔒</div><h4>Nível de Confiança</h4><p>Geralmente 95%. Define o valor crítico z</p></div>
+      <div class="cbox"><div class="ico">📏</div><h4>Erro-Padrão (EP)</h4><p>Mede a variabilidade amostral. Depende de n e da dispersão</p></div>
     </div>
     <div class="fml">
       IC = Estimativa Pontual ± z × Erro-Padrão
@@ -187,12 +196,14 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
 
   <div class="card">
     <h2 class="ct">📊 Valores de z mais usados</h2>
-    <table class="ztab">
-      <tr><th>Nível de Confiança</th><th>α (alfa)</th><th>α/2</th><th>Valor crítico z</th><th>Uso</th></tr>
-      <tr><td>90%</td><td>0,10</td><td>0,05</td><td>1,645</td><td>Estudos exploratórios</td></tr>
-      <tr class="hl"><td>95%</td><td>0,05</td><td>0,025</td><td><strong>1,960</strong></td><td>⭐ Padrão na medicina</td></tr>
-      <tr><td>99%</td><td>0,01</td><td>0,005</td><td>2,576</td><td>Alta exigência de certeza</td></tr>
-    </table>
+    <div class="ztab-wrap">
+      <table class="ztab">
+        <tr><th>Nível de Confiança</th><th>α (alfa)</th><th>α/2</th><th>Valor crítico z</th><th>Uso</th></tr>
+        <tr><td>90%</td><td>0,10</td><td>0,05</td><td>1,645</td><td>Estudos exploratórios</td></tr>
+        <tr class="hl"><td>95%</td><td>0,05</td><td>0,025</td><td><strong>1,960</strong></td><td>⭐ Padrão na medicina</td></tr>
+        <tr><td>99%</td><td>0,01</td><td>0,005</td><td>2,576</td><td>Alta exigência de certeza</td></tr>
+      </table>
+    </div>
     <p class="note">* O valor z é o percentil da distribuição normal padrão que deixa α/2 em cada cauda.</p>
   </div>
 
@@ -201,7 +212,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
     <div class="g2">
       <div>
         <h3 class="st">Aumentam a largura (menos preciso)</h3>
-        <ul style="padding-left:1.2rem;font-size:.91rem">
+        <ul style="padding-left:1.2rem;font-size:.9rem">
           <li>↑ Nível de confiança (ex.: 95% → 99%)</li>
           <li>↓ Tamanho amostral (n pequeno)</li>
           <li>↑ Variabilidade (p próximo de 0,5)</li>
@@ -209,7 +220,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
       </div>
       <div>
         <h3 class="st">Diminuem a largura (mais preciso)</h3>
-        <ul style="padding-left:1.2rem;font-size:.91rem">
+        <ul style="padding-left:1.2rem;font-size:.9rem">
           <li>↓ Nível de confiança (ex.: 99% → 90%)</li>
           <li>↑ Tamanho amostral (n grande)</li>
           <li>↓ Variabilidade (p próximo de 0 ou 1)</li>
@@ -220,7 +231,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
 
   <div class="card card-purple">
     <h2 class="ct">🧪 Explorador Interativo — Veja como n e confiança afetam o IC</h2>
-    <p style="font-size:.9rem;margin-bottom:1rem">Ajuste os controles e veja o intervalo de confiança se atualizar em tempo real.</p>
+    <p style="font-size:.89rem;margin-bottom:.9rem">Ajuste os controles e veja o intervalo de confiança se atualizar em tempo real.</p>
     <div class="g3">
       <div class="ig">
         <label>Proporção verdadeira (p) <span class="rval" id="ex_pv">50%</span></label>
@@ -236,14 +247,14 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
       </div>
     </div>
     <div class="cvwrap"><canvas class="cib" id="exCanvas" height="90"></canvas></div>
-    <div id="ex_info" style="font-size:.89rem;text-align:center;color:var(--muted);margin-top:.3rem"></div>
+    <div id="ex_info" style="font-size:.87rem;text-align:center;color:var(--muted);margin-top:.3rem"></div>
   </div>
 
   <div class="card">
     <h2 class="ct">🏥 Relevância para a Medicina</h2>
     <div class="info">
       <div class="it">Onde você verá ICs na prática médica</div>
-      <ul style="padding-left:1.2rem;font-size:.9rem;margin-top:.3rem">
+      <ul style="padding-left:1.2rem;font-size:.89rem;margin-top:.3rem">
         <li><strong>Ensaios clínicos:</strong> eficácia de um medicamento (ex.: redução de risco absoluto com IC 95%)</li>
         <li><strong>Estudos de coorte:</strong> risco relativo de doença em expostos vs. não-expostos</li>
         <li><strong>Estudos de caso-controle:</strong> odds ratio com intervalo de confiança</li>
@@ -251,10 +262,41 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
         <li><strong>Testes diagnósticos:</strong> sensibilidade/especificidade com IC</li>
       </ul>
     </div>
-    <div class="succ" style="margin-top:.8rem">
+    <div class="succ" style="margin-top:.75rem">
       ✅ <strong>Regra de ouro:</strong> Se o IC de uma diferença <strong>não inclui o zero</strong>, ou o IC de uma razão <strong>não inclui o 1</strong>, o resultado é estatisticamente significativo (p &lt; α).
     </div>
   </div>
+
+  <div class="card" style="border-top:4px solid #2c3e50">
+    <h2 class="ct" style="color:#2c3e50">📚 Leitura Recomendada para Aprofundamento</h2>
+    <div style="display:flex;gap:1.1rem;align-items:flex-start;flex-wrap:wrap">
+      <div style="flex-shrink:0;width:72px;height:95px;background:linear-gradient(160deg,#2c3e50,#4a6278);border-radius:6px;display:flex;align-items:center;justify-content:center;box-shadow:3px 3px 10px rgba(0,0,0,.2)">
+        <span style="font-size:1.8rem">📖</span>
+      </div>
+      <div style="flex:1;min-width:220px">
+        <p style="font-size:1rem;font-weight:700;color:#2c3e50;margin-bottom:.3rem;line-height:1.4">
+          Statistics with Confidence:<br>
+          <span style="font-weight:400;font-size:.92rem;color:var(--muted)">Confidence Intervals and Statistical Guidelines</span>
+        </p>
+        <div style="font-size:.85rem;color:var(--muted);margin-bottom:.6rem;line-height:1.6">
+          <div><strong style="color:var(--text)">1ª edição (1989):</strong> Martin J. Gardner &amp; Douglas G. Altman</div>
+          <div><strong style="color:var(--text)">2ª edição (2000):</strong> Douglas Altman, David Machin, Trevor N. Bryant &amp; Martin J. Gardner</div>
+          <div style="margin-top:.2rem"><strong style="color:var(--text)">Editora:</strong> BMJ Books</div>
+        </div>
+        <div class="info" style="margin:0">
+          <div class="it">Por que ler este livro?</div>
+          Obra de referência obrigatória para quem trabalha com pesquisa clínica e biomédica. Foca especificamente no <strong>uso prático dos intervalos de confiança</strong> em detrimento do p-valor isolado, defendendo uma interpretação mais informativa dos resultados de estudos. Indicado para estudantes de pós-graduação, pesquisadores clínicos e revisores de literatura científica.
+        </div>
+      </div>
+    </div>
+    <div style="display:flex;gap:.5rem;flex-wrap:wrap;margin-top:.85rem">
+      <span class="badge b-blue">Bioestatística Clínica</span>
+      <span class="badge b-green">Pesquisa Biomédica</span>
+      <span class="badge b-orange">Nível: Intermediário–Avançado</span>
+      <span class="badge b-purple">Referência clássica</span>
+    </div>
+  </div>
+
 </section>
 
 <!-- ═══════════ S1: IC PROPORÇÃO ═══════════ -->
@@ -262,7 +304,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
 
   <div class="card card-blue">
     <h2 class="ct">📐 IC de uma Proporção</h2>
-    <p style="font-size:.91rem">Usado quando queremos estimar a proporção verdadeira de um desfecho em uma população, a partir de uma amostra. Exemplos: taxa de complicações, prevalência de uma doença, taxa de resposta a tratamento.</p>
+    <p style="font-size:.9rem">Usado quando queremos estimar a proporção verdadeira de um desfecho em uma população, a partir de uma amostra. Exemplos: taxa de complicações, prevalência de uma doença, taxa de resposta a tratamento.</p>
     <div class="fml">
       p̂ = x / n &nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">(proporção amostral)</span><br>
       EP = √[ p̂ × (1 − p̂) / n ] &nbsp;&nbsp;&nbsp;<span class="cmt">(erro-padrão)</span><br>
@@ -276,7 +318,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
 
   <div class="card">
     <h2 class="ct">🔢 Calculadora</h2>
-    <div class="info" style="margin-bottom:1rem">
+    <div class="info" style="margin-bottom:.9rem">
       <div class="it">📋 Exemplo pré-carregado</div>
       Em um estudo com 200 pacientes submetidos a cirurgia cardíaca, 42 desenvolveram fibrilação atrial pós-operatória. Qual a estimativa da taxa com IC 95%?
     </div>
@@ -325,7 +367,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
       <li><strong>Calcule o erro-padrão:</strong> EP = √[0,21 × 0,79 ÷ 200] = √[0,000830] ≈ 0,0288</li>
       <li><strong>Escolha z:</strong> para 95%, use z = 1,960</li>
       <li><strong>Calcule a margem de erro:</strong> ME = 1,960 × 0,0288 ≈ 0,0564</li>
-      <li><strong>Construa o IC:</strong> [0,21 − 0,0564; 0,21 + 0,0564] = [<strong>15,36%</strong>; <strong>26,64%</strong>]</li>
+      <li><strong>Construa o IC:</strong> [0,21 − 0,0564 ; 0,21 + 0,0564] = [<strong>15,36%</strong> ; <strong>26,64%</strong>]</li>
       <li><strong>Interprete:</strong> com 95% de confiança, entre 15,4% e 26,6% dos pacientes cardíacos desenvolvem FA pós-operatória</li>
     </ol>
   </div>
@@ -337,7 +379,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
 
   <div class="card card-green">
     <h2 class="ct">➕ IC da Diferença entre Duas Proporções</h2>
-    <p style="font-size:.91rem">Compara a proporção de um desfecho entre dois grupos (ex.: grupo tratamento vs. controle). A estimativa central é a <strong>diferença de risco (DR)</strong> ou <strong>redução de risco absoluta (RRA)</strong>.</p>
+    <p style="font-size:.9rem">Compara a proporção de um desfecho entre dois grupos (ex.: grupo tratamento vs. controle). A estimativa central é a <strong>diferença de risco (DR)</strong> ou <strong>redução de risco absoluta (RRA)</strong>.</p>
     <div class="fml">
       DR = p̂₁ − p̂₂ &nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">(diferença de risco)</span><br>
       EP = √[ p̂₁(1−p̂₁)/n₁ + p̂₂(1−p̂₂)/n₂ ]<br>
@@ -353,7 +395,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
 
   <div class="card">
     <h2 class="ct">🔢 Calculadora</h2>
-    <div class="info" style="margin-bottom:1rem">
+    <div class="info" style="margin-bottom:.9rem">
       <div class="it">📋 Exemplo pré-carregado</div>
       Ensaio clínico: Medicamento A (n=150, 45 curas) vs. Placebo (n=140, 28 curas). Há diferença significativa na taxa de cura?
     </div>
@@ -397,19 +439,17 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
 
   <div class="card">
     <h2 class="ct">📖 NNT — Número Necessário para Tratar</h2>
-    <p style="font-size:.91rem;margin-bottom:.6rem">Quando a diferença de risco é significativa, calcula-se o NNT: quantos pacientes precisam ser tratados para evitar 1 desfecho negativo (ou obter 1 desfecho positivo).</p>
-    <div class="fml">
-      NNT = 1 / |Diferença de Risco| = 1 / |p̂₁ − p̂₂|
-    </div>
+    <p style="font-size:.9rem;margin-bottom:.6rem">Quando a diferença de risco é significativa, calcula-se o NNT: quantos pacientes precisam ser tratados para evitar 1 desfecho negativo (ou obter 1 desfecho positivo).</p>
+    <div class="fml">NNT = 1 / |Diferença de Risco| = 1 / |p̂₁ − p̂₂|</div>
     <div id="p2_nnt_box" style="display:none">
       <div class="succ" id="p2_nnt"></div>
     </div>
     <div class="info">
       <div class="it">Interpretação do NNT</div>
-      <ul style="padding-left:1.2rem;font-size:.88rem;margin-top:.3rem">
+      <ul style="padding-left:1.2rem;font-size:.87rem;margin-top:.3rem">
         <li><strong>NNT próximo de 1:</strong> tratamento muito eficaz</li>
         <li><strong>NNT alto (ex: &gt; 50):</strong> benefício pequeno por paciente tratado</li>
-        <li>O IC da DR gera também um IC para o NNT: IC(NNT) = [1/LS; 1/LI] da diferença</li>
+        <li>O IC da DR gera também um IC para o NNT: IC(NNT) = [1/LS ; 1/LI] da diferença</li>
       </ul>
     </div>
   </div>
@@ -421,7 +461,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
 
   <div class="card card-orange">
     <h2 class="ct">✖ IC da Razão entre Duas Proporções (Risco Relativo)</h2>
-    <p style="font-size:.91rem">O <strong>Risco Relativo (RR)</strong> compara o risco de um desfecho entre dois grupos como uma razão (multiplicador). É usado em coortes e ensaios clínicos. O IC é calculado na escala logarítmica pela estabilidade estatística.</p>
+    <p style="font-size:.9rem">O <strong>Risco Relativo (RR)</strong> compara o risco de um desfecho entre dois grupos como uma razão (multiplicador). É usado em coortes e ensaios clínicos. O IC é calculado na escala logarítmica pela estabilidade estatística.</p>
     <div class="fml">
       RR = p̂₁ / p̂₂ &nbsp;&nbsp;&nbsp;&nbsp;<span class="cmt">(risco relativo)</span><br>
       EP_ln = √[ (1−p̂₁)/(n₁×p̂₁) + (1−p̂₂)/(n₂×p̂₂) ] &nbsp;<span class="cmt">(na escala log)</span><br>
@@ -430,7 +470,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
     </div>
     <div class="info">
       <div class="it">🔑 Interpretação do Risco Relativo</div>
-      <span class="badge b-red">RR &gt; 1</span> Fator de risco (aumenta probabilidade) &nbsp;|&nbsp;
+      <span class="badge b-red">RR &gt; 1</span> Fator de risco &nbsp;|&nbsp;
       <span class="badge b-green">RR &lt; 1</span> Fator protetor &nbsp;|&nbsp;
       <span class="badge b-blue">IC inclui 1</span> Não significativo &nbsp;|&nbsp;
       <span class="badge b-orange">RR = 1</span> Sem associação
@@ -439,7 +479,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
 
   <div class="card">
     <h2 class="ct">🔢 Calculadora</h2>
-    <div class="info" style="margin-bottom:1rem">
+    <div class="info" style="margin-bottom:.9rem">
       <div class="it">📋 Exemplo pré-carregado</div>
       Estudo de coorte: fumantes (n=300, 60 com câncer de pulmão) vs. não-fumantes (n=400, 20 com câncer de pulmão). Qual o risco relativo e seu IC 95%?
     </div>
@@ -483,11 +523,13 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
 
   <div class="card">
     <h2 class="ct">⚖️ RR vs. OR — Quando usar cada um?</h2>
-    <table class="ztab">
-      <tr><th>Medida</th><th>Delineamento</th><th>Fórmula</th><th>Interpretação</th></tr>
-      <tr><td><strong>Risco Relativo (RR)</strong></td><td>Coorte, Ensaio Clínico</td><td>p₁ / p₂</td><td>"X vezes mais provável"</td></tr>
-      <tr><td><strong>Odds Ratio (OR)</strong></td><td>Caso-controle</td><td>(a/b) / (c/d)</td><td>Aproxima o RR quando o desfecho é raro (&lt;10%)</td></tr>
-    </table>
+    <div class="ztab-wrap">
+      <table class="ztab">
+        <tr><th>Medida</th><th>Delineamento</th><th>Fórmula</th><th>Interpretação</th></tr>
+        <tr><td><strong>Risco Relativo (RR)</strong></td><td>Coorte, Ensaio Clínico</td><td>p₁ / p₂</td><td>"X vezes mais provável"</td></tr>
+        <tr><td><strong>Odds Ratio (OR)</strong></td><td>Caso-controle</td><td>(a/b) / (c/d)</td><td>Aproxima o RR quando o desfecho é raro (&lt;10%)</td></tr>
+      </table>
+    </div>
     <div class="warn">
       ⚠️ O RR <strong>não pode</strong> ser calculado em estudos de caso-controle (não se conhece a incidência real). Use o OR nesses casos.
     </div>
@@ -500,7 +542,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
 
   <div class="card card-purple">
     <h2 class="ct">🔬 Simulação de Cobertura do IC</h2>
-    <p style="font-size:.91rem">Esta simulação demonstra <em>por que</em> interpretamos o IC como "X% dos intervalos conterão o verdadeiro parâmetro". Definimos uma proporção verdadeira, geramos amostras aleatórias e construímos um IC para cada uma. Observe quantos ICs capturam o valor verdadeiro.</p>
+    <p style="font-size:.9rem">Esta simulação demonstra <em>por que</em> interpretamos o IC como "X% dos intervalos conterão o verdadeiro parâmetro". Definimos uma proporção verdadeira, geramos amostras aleatórias e construímos um IC para cada uma. Observe quantos ICs capturam o valor verdadeiro.</p>
   </div>
 
   <div class="card">
@@ -524,7 +566,7 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
         </select>
       </div>
       <div class="ig">
-        <label>Número de amostras (simulações) <span class="rval" id="sm_sv">50</span></label>
+        <label>Número de amostras <span class="rval" id="sm_sv">50</span></label>
         <input type="range" min="20" max="100" value="50" step="5" id="sm_s" oninput="document.getElementById('sm_sv').textContent=this.value">
       </div>
     </div>
@@ -539,9 +581,9 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
       <div class="sstat"><div class="sv sv-r" id="sm_miss">—</div><div class="sl">ICs que falham</div></div>
       <div class="sstat"><div class="sv sv-b" id="sm_pct">—</div><div class="sl">Taxa de cobertura</div></div>
     </div>
-    <div style="margin-top:1rem;padding:.75rem 1rem;border-radius:8px;background:#f5f5f5;font-size:.88rem" id="sm_msg"></div>
+    <div style="margin-top:.9rem;padding:.72rem .95rem;border-radius:8px;background:#f5f5f5;font-size:.87rem" id="sm_msg"></div>
     <h3 class="st" style="margin-top:1rem">Visualização — Cada linha é um IC de uma amostra diferente</h3>
-    <div style="font-size:.8rem;color:var(--muted);margin-bottom:.5rem">
+    <div style="font-size:.78rem;color:var(--muted);margin-bottom:.45rem">
       <span style="color:var(--green)">■</span> IC contém p &nbsp;
       <span style="color:var(--red)">■</span> IC não contém p &nbsp;
       <span style="color:var(--blue)">│</span> Valor verdadeiro p
@@ -561,75 +603,81 @@ hr.dv{border:none;border-top:2px dashed var(--border);margin:1.3rem 0}
 
 </section>
 
+<footer style="background:#2c3e50;color:#ccc;text-align:center;padding:1.5rem 1rem;font-size:.85rem;line-height:1.9;margin-top:2rem">
+  <div>Material complementar da disciplina de Pesquisa em Ciências da Saúde.</div>
+  <div>Universidade Estadual de Ciências da Saúde de Alagoas (UNCISAL)</div>
+  <div>Maceió, Alagoas, Brasil</div>
+  <div style="margin-top:.35rem;color:#aaa">© 2026</div>
+</footer>
+
 <script>
-// ── Utilidades ──────────────────────────────────────────────
 const Z = {90:1.645, 95:1.96, 99:2.576};
 
 function pct(v,d=2){ return (v*100).toFixed(d)+'%'; }
-function fmt(v,d=4){ return v.toFixed(d); }
 function fmtRR(v){ return v.toFixed(3); }
 
 function showTab(id){
   document.querySelectorAll('.sec').forEach(s=>s.classList.remove('active'));
   document.querySelectorAll('nav button').forEach(b=>b.classList.remove('active'));
   document.getElementById(id).classList.add('active');
-  document.querySelector(`[data-tab="${id}"]`).classList.add('active');
+  document.querySelector('[data-tab="'+id+'"]').classList.add('active');
   if(id==='s0') setTimeout(updateEx,50);
 }
 
-// ── Canvas CI bar ────────────────────────────────────────────
 function drawCIBar(canvas, lo, hi, est, nullV, rangeMin, rangeMax, isLog){
-  const W = canvas.parentElement.clientWidth || 600;
+  var W = canvas.parentElement ? (canvas.parentElement.clientWidth || 500) : 500;
+  if(W < 200) W = 200;
   canvas.width = W;
-  const H = canvas.height;
-  const ctx = canvas.getContext('2d');
+  var H = canvas.height;
+  var ctx = canvas.getContext('2d');
   ctx.clearRect(0,0,W,H);
 
-  const padL=18, padR=18;
-  const axY = H*0.55;
+  var padL=14, padR=14;
+  var axY = Math.round(H*0.52);
 
-  let mn = rangeMin !== undefined ? rangeMin : lo - (hi-lo)*0.6;
-  let mx = rangeMax !== undefined ? rangeMax : hi + (hi-lo)*0.6;
+  var mn = (rangeMin !== undefined) ? rangeMin : lo - (hi-lo)*0.6;
+  var mx = (rangeMax !== undefined) ? rangeMax : hi + (hi-lo)*0.6;
   mn = Math.min(mn, lo - (hi-lo)*0.15);
   mx = Math.max(mx, hi + (hi-lo)*0.15);
   if(mn === mx){ mn -= 0.05; mx += 0.05; }
 
-  const toX = v => padL + (v-mn)/(mx-mn)*(W-padL-padR);
+  function toX(v){ return padL + (v-mn)/(mx-mn)*(W-padL-padR); }
 
   // axis
-  ctx.strokeStyle='#ccc'; ctx.lineWidth=1;
+  ctx.strokeStyle='#ddd'; ctx.lineWidth=1;
   ctx.beginPath(); ctx.moveTo(padL,axY+22); ctx.lineTo(W-padR,axY+22); ctx.stroke();
 
-  // ticks
-  ctx.font='10px system-ui'; ctx.textAlign='center'; ctx.fillStyle='#999';
-  const nt=6;
-  for(let i=0;i<=nt;i++){
-    const v=mn+i*(mx-mn)/nt;
-    const x=toX(v);
-    ctx.strokeStyle='#e0e0e0'; ctx.lineWidth=1;
+  // ticks & labels
+  ctx.font='10px system-ui,sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#aaa';
+  var nt=5;
+  for(var i=0;i<=nt;i++){
+    var v=mn+i*(mx-mn)/nt;
+    var x=toX(v);
+    ctx.strokeStyle='#eee'; ctx.lineWidth=1;
     ctx.beginPath(); ctx.moveTo(x,axY+18); ctx.lineTo(x,axY+26); ctx.stroke();
-    let lbl = isLog ? fmtRR(v) : (Math.abs(v)<0.001?v.toFixed(5):Math.abs(v)>=10?v.toFixed(1):v.toFixed(3));
-    ctx.fillText(lbl,x,axY+36);
+    var lbl = isLog ? fmtRR(v) : (Math.abs(v)<0.0005?v.toFixed(4):v.toFixed(3));
+    ctx.fillStyle='#aaa';
+    ctx.fillText(lbl, x, axY+36);
   }
 
   // null line
-  if(nullV!==undefined){
-    const nx=toX(nullV);
-    if(nx>=padL && nx<=W-padR){
-      ctx.strokeStyle='#aaa'; ctx.lineWidth=1.5;
+  if(nullV !== undefined){
+    var nx = toX(nullV);
+    if(nx >= padL && nx <= W-padR){
+      ctx.strokeStyle='#bbb'; ctx.lineWidth=1.5;
       ctx.setLineDash([4,3]);
-      ctx.beginPath(); ctx.moveTo(nx,8); ctx.lineTo(nx,axY+20); ctx.stroke();
+      ctx.beginPath(); ctx.moveTo(nx,6); ctx.lineTo(nx,axY+20); ctx.stroke();
       ctx.setLineDash([]);
-      ctx.fillStyle='#aaa'; ctx.font='9px system-ui'; ctx.textAlign='center';
-      ctx.fillText(isLog?'RR=1':'0',nx,H-2);
+      ctx.fillStyle='#bbb'; ctx.font='9px system-ui,sans-serif'; ctx.textAlign='center';
+      ctx.fillText(isLog?'RR=1':'0', nx, H-2);
     }
   }
 
-  const xl=toX(lo), xh=toX(hi), xe=toX(est);
+  var xl=toX(lo), xh=toX(hi), xe=toX(est);
 
-  // shaded
+  // shaded area
   ctx.fillStyle='rgba(26,107,154,0.10)';
-  ctx.fillRect(xl,axY-16,xh-xl,32);
+  ctx.fillRect(xl, axY-16, xh-xl, 32);
 
   // CI line
   ctx.strokeStyle='#1a6b9a'; ctx.lineWidth=3;
@@ -637,295 +685,287 @@ function drawCIBar(canvas, lo, hi, est, nullV, rangeMin, rangeMax, isLog){
 
   // whiskers
   ctx.lineWidth=2;
-  [xl,xh].forEach(x=>{
+  [xl,xh].forEach(function(x){
     ctx.beginPath(); ctx.moveTo(x,axY-13); ctx.lineTo(x,axY+13); ctx.stroke();
   });
 
-  // point estimate diamond
+  // estimate diamond
   ctx.fillStyle='#e74c3c';
   ctx.beginPath();
-  ctx.moveTo(xe,axY-9); ctx.lineTo(xe+7,axY);
-  ctx.lineTo(xe,axY+9); ctx.lineTo(xe-7,axY);
+  ctx.moveTo(xe,axY-9); ctx.lineTo(xe+7,axY); ctx.lineTo(xe,axY+9); ctx.lineTo(xe-7,axY);
   ctx.closePath(); ctx.fill();
 
   // labels above
-  ctx.font='bold 10px system-ui'; ctx.textAlign='center';
-  ctx.fillStyle='#1a6b9a'; ctx.fillText(isLog?fmtRR(lo):pct(lo),xl,axY-20);
-  ctx.fillStyle='#1a6b9a'; ctx.fillText(isLog?fmtRR(hi):pct(hi),xh,axY-20);
-  ctx.fillStyle='#e74c3c'; ctx.fillText(isLog?fmtRR(est):pct(est),xe,axY-20);
+  ctx.font='bold 10px system-ui,sans-serif'; ctx.textAlign='center';
+  ctx.fillStyle='#1a6b9a';
+  var loLbl = isLog ? fmtRR(lo) : pct(lo);
+  var hiLbl = isLog ? fmtRR(hi) : pct(hi);
+  var estLbl = isLog ? fmtRR(est) : pct(est);
+  ctx.fillText(loLbl, xl, axY-20);
+  ctx.fillText(hiLbl, xh, axY-20);
+  ctx.fillStyle='#e74c3c';
+  ctx.fillText(estLbl, xe, axY-20);
 
   // legend
-  ctx.font='9px system-ui'; ctx.fillStyle='#e74c3c'; ctx.textAlign='left';
-  ctx.fillText('● Estimativa',4,12);
-  ctx.fillStyle='#1a6b9a';
-  ctx.fillText('│ Limite IC',W/2-20,12);
+  ctx.font='9px system-ui,sans-serif'; ctx.textAlign='left';
+  ctx.fillStyle='#e74c3c'; ctx.fillText('◆ Estimativa', 4, 12);
+  ctx.fillStyle='#1a6b9a'; ctx.fillText('│── IC ──│', W/2-25, 12);
 }
 
 // ── Concept Explorer ────────────────────────────────────────
 function updateEx(){
-  const p=parseInt(document.getElementById('ex_p').value)/100;
-  const n=parseInt(document.getElementById('ex_n').value);
-  const c=parseInt(document.getElementById('ex_c').value);
-  document.getElementById('ex_pv').textContent=Math.round(p*100)+'%';
-  document.getElementById('ex_nv').textContent=n;
-  document.getElementById('ex_cv').textContent=c+'%';
+  var p = parseInt(document.getElementById('ex_p').value)/100;
+  var n = parseInt(document.getElementById('ex_n').value);
+  var c = parseInt(document.getElementById('ex_c').value);
+  document.getElementById('ex_pv').textContent = Math.round(p*100)+'%';
+  document.getElementById('ex_nv').textContent = n;
+  document.getElementById('ex_cv').textContent = c+'%';
 
-  const z=Z[c] || 1.96;
-  const ep=Math.sqrt(p*(1-p)/n);
-  const lo=Math.max(0,p-z*ep);
-  const hi=Math.min(1,p+z*ep);
-  const w=(hi-lo)*100;
+  var z = Z[c] || 1.96;
+  var ep = Math.sqrt(p*(1-p)/n);
+  var lo = Math.max(0, p-z*ep);
+  var hi = Math.min(1, p+z*ep);
 
-  const cv=document.getElementById('exCanvas');
-  drawCIBar(cv,lo,hi,p,undefined,Math.max(0,p-0.25),Math.min(1,p+0.25),false);
+  var cv = document.getElementById('exCanvas');
+  var span = Math.max(hi-lo, 0.12);
+  drawCIBar(cv, lo, hi, p, undefined, Math.max(0,p-span), Math.min(1,p+span), false);
 
-  document.getElementById('ex_info').innerHTML=
-    `IC: [${pct(lo)} — ${pct(hi)}] &nbsp;|&nbsp; Largura: <strong>${w.toFixed(2)} pp</strong> &nbsp;|&nbsp; Margem de erro: ±${pct(z*ep)}`;
+  document.getElementById('ex_info').innerHTML =
+    'IC: ['+pct(lo)+' — '+pct(hi)+'] &nbsp;|&nbsp; Largura: <strong>'+((hi-lo)*100).toFixed(2)+' pp</strong> &nbsp;|&nbsp; Margem de erro: ±'+pct(z*ep);
 }
 
-// ── Seção 1: IC Proporção ───────────────────────────────────
+// ── Seção 1: IC Proporção ────────────────────────────────────
 function calcP1(){
-  const n=parseFloat(document.getElementById('p1_n').value);
-  const x=parseFloat(document.getElementById('p1_x').value);
-  const c=parseInt(document.getElementById('p1_conf').value);
-  if(!n||n<1){alert('Informe n válido.');return;}
-  if(x>n||x<0){alert('Número de eventos inválido.');return;}
-  const z=Z[c];
-  const p=x/n;
-  const ep=Math.sqrt(p*(1-p)/n);
-  const me=z*ep;
-  const lo=Math.max(0,p-me);
-  const hi=Math.min(1,p+me);
-
-  const ok=n*p>=5 && n*(1-p)>=5;
+  var n = parseFloat(document.getElementById('p1_n').value);
+  var x = parseFloat(document.getElementById('p1_x').value);
+  var c = parseInt(document.getElementById('p1_conf').value);
+  if(!n||n<1){ alert('Informe n válido.'); return; }
+  if(x>n||x<0){ alert('Número de eventos inválido.'); return; }
+  var z = Z[c];
+  var p = x/n;
+  var ep = Math.sqrt(p*(1-p)/n);
+  var me = z*ep;
+  var lo = Math.max(0, p-me);
+  var hi = Math.min(1, p+me);
+  var ok = n*p>=5 && n*(1-p)>=5;
 
   document.getElementById('p1_rbox').style.display='block';
-  document.getElementById('p1_hl').textContent=`IC ${c}%: [${pct(lo)} — ${pct(hi)}]`;
-  document.getElementById('p1_sub').textContent=`Estimativa pontual: ${pct(p)} (${x} eventos em ${n} pacientes)`;
-  document.getElementById('p1_phat').textContent=pct(p);
-  document.getElementById('p1_ep').textContent=fmt(ep,5);
-  document.getElementById('p1_z').textContent=z.toFixed(3);
-  document.getElementById('p1_me').textContent=pct(me,4);
-  document.getElementById('p1_li').textContent=pct(lo);
-  document.getElementById('p1_ls').textContent=pct(hi);
+  document.getElementById('p1_hl').textContent = 'IC '+c+'%: ['+pct(lo)+' — '+pct(hi)+']';
+  document.getElementById('p1_sub').textContent = 'Estimativa pontual: '+pct(p)+' ('+x+' eventos em '+n+' pacientes)';
+  document.getElementById('p1_phat').textContent = pct(p);
+  document.getElementById('p1_ep').textContent = ep.toFixed(5);
+  document.getElementById('p1_z').textContent = z.toFixed(3);
+  document.getElementById('p1_me').textContent = pct(me,4);
+  document.getElementById('p1_li').textContent = pct(lo);
+  document.getElementById('p1_ls').textContent = pct(hi);
 
-  const cv=document.getElementById('p1_cv');
-  const span=Math.max(hi-lo,0.12);
-  drawCIBar(cv,lo,hi,p,undefined,Math.max(0,p-span),Math.min(1,p+span),false);
+  var cv = document.getElementById('p1_cv');
+  var span = Math.max(hi-lo, 0.12)*0.8;
+  drawCIBar(cv, lo, hi, p, undefined, Math.max(0,p-span), Math.min(1,p+span), false);
 
-  const wn=ok?'':'<div class="warn" style="margin-top:.5rem">⚠️ Condição n×p̂≥5 ou n×(1−p̂)≥5 não atendida. Use o método exato de Wilson ou Clopper-Pearson para amostras pequenas.</div>';
-  document.getElementById('p1_interp').innerHTML=
-    `Com <b>${c}% de confiança</b>, a verdadeira proporção na população está entre <b>${pct(lo)}</b> e <b>${pct(hi)}</b>.
-    Se repetíssemos este estudo muitas vezes, ${c}% dos intervalos construídos desta forma conteriam a proporção verdadeira.${wn}`;
+  var wn = ok ? '' : '<div class="warn" style="margin-top:.5rem">⚠️ Condição n×p̂≥5 ou n×(1−p̂)≥5 não atendida. Use o método exato de Wilson ou Clopper-Pearson para amostras pequenas.</div>';
+  document.getElementById('p1_interp').innerHTML =
+    'Com <b>'+c+'% de confiança</b>, a verdadeira proporção na população está entre <b>'+pct(lo)+'</b> e <b>'+pct(hi)+'</b>. '+
+    'Se repetíssemos este estudo muitas vezes, '+c+'% dos intervalos construídos desta forma conteriam a proporção verdadeira.'+wn;
 }
 
-// ── Seção 2: IC Diferença ───────────────────────────────────
+// ── Seção 2: IC Diferença ─────────────────────────────────────
 function calcP2(){
-  const n1=parseFloat(document.getElementById('p2_n1').value);
-  const x1=parseFloat(document.getElementById('p2_x1').value);
-  const n2=parseFloat(document.getElementById('p2_n2').value);
-  const x2=parseFloat(document.getElementById('p2_x2').value);
-  const c=parseInt(document.getElementById('p2_conf').value);
-  if(!n1||!n2){alert('Informe n válido.');return;}
-  if(x1>n1||x2>n2||x1<0||x2<0){alert('Eventos inválidos.');return;}
+  var n1=parseFloat(document.getElementById('p2_n1').value);
+  var x1=parseFloat(document.getElementById('p2_x1').value);
+  var n2=parseFloat(document.getElementById('p2_n2').value);
+  var x2=parseFloat(document.getElementById('p2_x2').value);
+  var c=parseInt(document.getElementById('p2_conf').value);
+  if(!n1||!n2){ alert('Informe n válido.'); return; }
+  if(x1>n1||x2>n2||x1<0||x2<0){ alert('Eventos inválidos.'); return; }
 
-  const z=Z[c];
-  const p1=x1/n1, p2=x2/n2;
-  const dr=p1-p2;
-  const ep=Math.sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2);
-  const me=z*ep;
-  const lo=dr-me, hi=dr+me;
-  const sig = !(lo<=0 && hi>=0);
+  var z=Z[c];
+  var p1=x1/n1, p2=x2/n2;
+  var dr=p1-p2;
+  var ep=Math.sqrt(p1*(1-p1)/n1 + p2*(1-p2)/n2);
+  var me=z*ep;
+  var lo=dr-me, hi=dr+me;
+  var sig=!(lo<=0 && hi>=0);
 
   document.getElementById('p2_rbox').style.display='block';
-  document.getElementById('p2_hl').textContent=`IC ${c}%: [${pct(lo)} — ${pct(hi)}]`;
-  document.getElementById('p2_sub').textContent=`Diferença de Risco: ${pct(dr)} (p̂₁=${pct(p1)}, p̂₂=${pct(p2)})`;
+  document.getElementById('p2_hl').textContent='IC '+c+'%: ['+pct(lo)+' — '+pct(hi)+']';
+  document.getElementById('p2_sub').textContent='Diferença de Risco: '+pct(dr)+' (p̂₁='+pct(p1)+', p̂₂='+pct(p2)+')';
   document.getElementById('p2_p1').textContent=pct(p1);
   document.getElementById('p2_p2').textContent=pct(p2);
   document.getElementById('p2_dr').textContent=pct(dr);
-  document.getElementById('p2_ep').textContent=fmt(ep,5);
+  document.getElementById('p2_ep').textContent=ep.toFixed(5);
   document.getElementById('p2_li').textContent=pct(lo);
   document.getElementById('p2_ls').textContent=pct(hi);
 
-  const cv=document.getElementById('p2_cv');
-  const span=Math.max(hi-lo,0.08)*0.8;
-  drawCIBar(cv,lo,hi,dr,0,lo-span,hi+span,false);
+  var cv=document.getElementById('p2_cv');
+  var span=Math.max(hi-lo,0.08)*0.8;
+  drawCIBar(cv, lo, hi, dr, 0, lo-span, hi+span, false);
 
-  const vd = sig
-    ? `<span class="verdict v-sig">✗ Estatisticamente significativo (IC não inclui 0)</span>`
-    : `<span class="verdict v-ns">✓ Não significativo (IC inclui 0)</span>`;
-
-  let msg='';
+  var vd=sig
+    ? '<span class="verdict v-sig">✗ Estatisticamente significativo (IC não inclui 0)</span>'
+    : '<span class="verdict v-ns">✓ Não significativo (IC inclui 0)</span>';
+  var msg='';
   if(sig){
-    const dir = dr>0 ? `O Grupo 1 tem <b>${pct(Math.abs(dr))}</b> mais eventos que o Grupo 2.`
-                     : `O Grupo 1 tem <b>${pct(Math.abs(dr))}</b> menos eventos que o Grupo 2 (fator protetor).`;
-    msg=dir;
+    msg = dr>0
+      ? 'O Grupo 1 tem <b>'+pct(Math.abs(dr))+'</b> mais eventos que o Grupo 2.'
+      : 'O Grupo 1 tem <b>'+pct(Math.abs(dr))+'</b> menos eventos que o Grupo 2 (fator protetor).';
   } else {
-    msg=`A diferença de ${pct(dr)} <b>não é estatisticamente significativa</b> — o IC contém o zero, indicando que a diferença pode ser zero na população.`;
+    msg='A diferença de '+pct(dr)+' <b>não é estatisticamente significativa</b> — o IC contém o zero, indicando que a diferença pode ser zero na população.';
   }
+  document.getElementById('p2_interp').innerHTML=vd+'<br><br>Com <b>'+c+'% de confiança</b>, a diferença verdadeira está entre <b>'+pct(lo)+'</b> e <b>'+pct(hi)+'</b>. '+msg;
 
-  document.getElementById('p2_interp').innerHTML=
-    `${vd}<br><br>Com <b>${c}% de confiança</b>, a diferença verdadeira está entre <b>${pct(lo)}</b> e <b>${pct(hi)}</b>. ${msg}`;
-
-  // NNT
   if(sig && Math.abs(dr)>0.0001){
-    const nnt=Math.abs(1/dr);
-    const nnt_li=Math.abs(1/hi), nnt_ls=Math.abs(1/lo);
+    var nnt=Math.abs(1/dr);
+    var nnt_li=Math.abs(1/hi), nnt_ls=Math.abs(1/lo);
     document.getElementById('p2_nnt_box').style.display='block';
     document.getElementById('p2_nnt').innerHTML=
-      `<b>NNT = ${nnt.toFixed(1)}</b> — É necessário tratar ${nnt.toFixed(1)} pacientes para ${dr>0?'obter':'evitar'} 1 desfecho adicional.
-      IC ${c}% do NNT: [${Math.min(nnt_li,nnt_ls).toFixed(1)} — ${Math.max(nnt_li,nnt_ls).toFixed(1)}]`;
+      '<b>NNT = '+nnt.toFixed(1)+'</b> — É necessário tratar '+nnt.toFixed(1)+' pacientes para '+(dr>0?'obter':'evitar')+' 1 desfecho adicional. '+
+      'IC '+c+'% do NNT: ['+Math.min(nnt_li,nnt_ls).toFixed(1)+' — '+Math.max(nnt_li,nnt_ls).toFixed(1)+']';
   } else {
     document.getElementById('p2_nnt_box').style.display='none';
   }
 }
 
-// ── Seção 3: IC Razão (RR) ──────────────────────────────────
+// ── Seção 3: IC Razão (RR) ────────────────────────────────────
 function calcP3(){
-  const n1=parseFloat(document.getElementById('p3_n1').value);
-  const x1=parseFloat(document.getElementById('p3_x1').value);
-  const n2=parseFloat(document.getElementById('p3_n2').value);
-  const x2=parseFloat(document.getElementById('p3_x2').value);
-  const c=parseInt(document.getElementById('p3_conf').value);
-  if(!n1||!n2){alert('Informe n válido.');return;}
-  if(x1>n1||x2>n2||x1<0||x2<0){alert('Eventos inválidos.');return;}
-  if(x1===0||x2===0){alert('Esta fórmula requer pelo menos 1 evento em cada grupo. Para zeros, use métodos especiais (ex: +0.5 de correção).');return;}
+  var n1=parseFloat(document.getElementById('p3_n1').value);
+  var x1=parseFloat(document.getElementById('p3_x1').value);
+  var n2=parseFloat(document.getElementById('p3_n2').value);
+  var x2=parseFloat(document.getElementById('p3_x2').value);
+  var c=parseInt(document.getElementById('p3_conf').value);
+  if(!n1||!n2){ alert('Informe n válido.'); return; }
+  if(x1>n1||x2>n2||x1<0||x2<0){ alert('Eventos inválidos.'); return; }
+  if(x1===0||x2===0){ alert('Esta fórmula requer pelo menos 1 evento em cada grupo.'); return; }
 
-  const z=Z[c];
-  const p1=x1/n1, p2=x2/n2;
-  const rr=p1/p2;
-  const lnRR=Math.log(rr);
-  const ep_ln=Math.sqrt((1-p1)/(n1*p1) + (1-p2)/(n2*p2));
-  const me_ln=z*ep_ln;
-  const lo=Math.exp(lnRR-me_ln);
-  const hi=Math.exp(lnRR+me_ln);
-  const sig = !(lo<=1 && hi>=1);
+  var z=Z[c];
+  var p1=x1/n1, p2=x2/n2;
+  var rr=p1/p2;
+  var lnRR=Math.log(rr);
+  var ep_ln=Math.sqrt((1-p1)/(n1*p1) + (1-p2)/(n2*p2));
+  var me_ln=z*ep_ln;
+  var lo=Math.exp(lnRR-me_ln);
+  var hi=Math.exp(lnRR+me_ln);
+  var sig=!(lo<=1 && hi>=1);
 
   document.getElementById('p3_rbox').style.display='block';
-  document.getElementById('p3_hl').textContent=`RR = ${fmtRR(rr)}  —  IC ${c}%: [${fmtRR(lo)} — ${fmtRR(hi)}]`;
-  document.getElementById('p3_sub').textContent=`p̂₁ = ${pct(p1)}  |  p̂₂ = ${pct(p2)}  |  ln(RR) = ${lnRR.toFixed(4)}`;
+  document.getElementById('p3_hl').textContent='RR = '+fmtRR(rr)+'  —  IC '+c+'%: ['+fmtRR(lo)+' — '+fmtRR(hi)+']';
+  document.getElementById('p3_sub').textContent='p̂₁ = '+pct(p1)+'  |  p̂₂ = '+pct(p2)+'  |  ln(RR) = '+lnRR.toFixed(4);
   document.getElementById('p3_p1').textContent=pct(p1);
   document.getElementById('p3_p2').textContent=pct(p2);
   document.getElementById('p3_rr').textContent=fmtRR(rr);
-  document.getElementById('p3_ep').textContent=fmt(ep_ln,5);
+  document.getElementById('p3_ep').textContent=ep_ln.toFixed(5);
   document.getElementById('p3_li').textContent=fmtRR(lo);
   document.getElementById('p3_ls').textContent=fmtRR(hi);
 
-  const cv=document.getElementById('p3_cv');
-  const visMin=Math.max(0.05, lo*0.6);
-  const visMax=hi*1.6;
-  drawCIBar(cv,lo,hi,rr,1,visMin,visMax,true);
+  var cv=document.getElementById('p3_cv');
+  var visMin=Math.max(0.05, lo*0.6);
+  var visMax=hi*1.6;
+  drawCIBar(cv, lo, hi, rr, 1, visMin, visMax, true);
 
-  const vd = sig
-    ? `<span class="verdict v-sig">✗ Estatisticamente significativo (IC não inclui 1)</span>`
-    : `<span class="verdict v-ns">✓ Não significativo (IC inclui 1)</span>`;
-
-  let msg='';
+  var vd=sig
+    ? '<span class="verdict v-sig">✗ Estatisticamente significativo (IC não inclui 1)</span>'
+    : '<span class="verdict v-ns">✓ Não significativo (IC inclui 1)</span>';
+  var msg='';
   if(sig){
-    if(rr>1){
-      msg=`O grupo exposto tem <b>${fmtRR(rr)} vezes</b> mais risco de desenvolver o desfecho. O IC vai de ${fmtRR(lo)} a ${fmtRR(hi)}, não incluindo 1 — portanto é <b>fator de risco</b> significativo.`;
-    } else {
-      msg=`O grupo exposto tem ${fmtRR(rr)} vezes o risco, ou seja, <b>${pct(1-rr)} menos risco</b>. Trata-se de um <b>fator protetor</b> significativo.`;
-    }
+    msg = rr>1
+      ? 'O grupo exposto tem <b>'+fmtRR(rr)+' vezes</b> mais risco de desenvolver o desfecho. O IC vai de '+fmtRR(lo)+' a '+fmtRR(hi)+', não incluindo 1 — portanto é <b>fator de risco</b> significativo.'
+      : 'O grupo exposto tem '+fmtRR(rr)+' vezes o risco, ou seja, <b>'+pct(1-rr)+' menos risco</b>. Trata-se de um <b>fator protetor</b> significativo.';
   } else {
-    msg=`O RR de ${fmtRR(rr)} não é estatisticamente significativo — o IC contém o valor nulo (RR=1), indicando que pode não haver associação real.`;
+    msg='O RR de '+fmtRR(rr)+' não é estatisticamente significativo — o IC contém o valor nulo (RR=1), indicando que pode não haver associação real.';
   }
-
-  document.getElementById('p3_interp').innerHTML=
-    `${vd}<br><br>Com <b>${c}% de confiança</b>, o verdadeiro Risco Relativo está entre <b>${fmtRR(lo)}</b> e <b>${fmtRR(hi)}</b>. ${msg}`;
+  document.getElementById('p3_interp').innerHTML=vd+'<br><br>Com <b>'+c+'% de confiança</b>, o verdadeiro Risco Relativo está entre <b>'+fmtRR(lo)+'</b> e <b>'+fmtRR(hi)+'</b>. '+msg;
 }
 
-// ── Seção 4: Simulação ───────────────────────────────────────
+// ── Seção 4: Simulação ────────────────────────────────────────
 function binomial(n,p){
-  let k=0;
-  for(let i=0;i<n;i++) if(Math.random()<p) k++;
+  var k=0;
+  for(var i=0;i<n;i++) if(Math.random()<p) k++;
   return k;
 }
 
 function runSim(){
-  const trueP=parseInt(document.getElementById('sm_p').value)/100;
-  const n=parseInt(document.getElementById('sm_n').value);
-  const c=parseInt(document.getElementById('sm_conf').value);
-  const nsim=parseInt(document.getElementById('sm_s').value);
-  const z=Z[c];
+  var trueP=parseInt(document.getElementById('sm_p').value)/100;
+  var n=parseInt(document.getElementById('sm_n').value);
+  var c=parseInt(document.getElementById('sm_conf').value);
+  var nsim=parseInt(document.getElementById('sm_s').value);
+  var z=Z[c];
 
-  const data=[];
-  for(let i=0;i<nsim;i++){
-    const x=binomial(n,trueP);
-    const ph=x/n;
-    const ep=Math.sqrt(ph*(1-ph)/n);
-    const lo=Math.max(0,ph-z*ep);
-    const hi=Math.min(1,ph+z*ep);
-    data.push({ph,lo,hi,hit:(lo<=trueP && hi>=trueP)});
+  var data=[];
+  for(var i=0;i<nsim;i++){
+    var x=binomial(n,trueP);
+    var ph=x/n;
+    var ep=Math.sqrt(ph*(1-ph)/n);
+    var lo=Math.max(0,ph-z*ep);
+    var hi=Math.min(1,ph+z*ep);
+    data.push({ph:ph,lo:lo,hi:hi,hit:(lo<=trueP && hi>=trueP)});
   }
 
-  const hits=data.filter(d=>d.hit).length;
-  const miss=nsim-hits;
-  const covPct=(hits/nsim*100).toFixed(1);
+  var hits=data.filter(function(d){return d.hit;}).length;
+  var miss=nsim-hits;
+  var covPct=(hits/nsim*100).toFixed(1);
 
   document.getElementById('sm_total').textContent=nsim;
   document.getElementById('sm_hit').textContent=hits;
   document.getElementById('sm_miss').textContent=miss;
   document.getElementById('sm_pct').textContent=covPct+'%';
 
-  const diff=Math.abs(parseFloat(covPct)-c);
-  let msgColor='#1a3a5c', msgBg='#e8f4fd';
-  let msg='';
+  var diff=Math.abs(parseFloat(covPct)-c);
+  var msgColor='#1a3a5c', msgBg='#e8f4fd', msg='';
   if(diff<=3){
     msgColor='#1a5e30'; msgBg='#e8f5e9';
-    msg=`✅ Cobertura de ${covPct}% muito próxima do nível nominal de ${c}%. Exatamente o esperado — o procedimento funciona corretamente!`;
+    msg='✅ Cobertura de '+covPct+'% muito próxima do nível nominal de '+c+'%. Exatamente o esperado — o procedimento funciona corretamente!';
   } else if(diff<=8){
-    msg=`ℹ️ Cobertura de ${covPct}% — pequena variação em relação ao nominal ${c}%. Isso é esperado com ${nsim} amostras; aumentando o número de simulações, a cobertura converge para ${c}%.`;
+    msg='ℹ️ Cobertura de '+covPct+'% — pequena variação em relação ao nominal '+c+'%. Isso é esperado com '+nsim+' amostras; aumentando o número de simulações, a cobertura converge para '+c+'%.';
   } else {
     msgColor='#7d5a0a'; msgBg='#fff8e1';
-    msg=`⚠️ Cobertura de ${covPct}% — variação maior. Com poucas simulações isso pode acontecer por acaso. Tente novamente ou aumente o número de amostras.`;
+    msg='⚠️ Cobertura de '+covPct+'% — variação maior. Com poucas simulações isso pode acontecer por acaso. Tente novamente ou aumente o número de amostras.';
   }
-  document.getElementById('sm_msg').textContent='';
-  document.getElementById('sm_msg').innerHTML=`<span style="color:${msgColor}">${msg}</span>`;
-  document.getElementById('sm_msg').style.background=msgBg;
+  var msgEl=document.getElementById('sm_msg');
+  msgEl.innerHTML='<span style="color:'+msgColor+'">'+msg+'</span>';
+  msgEl.style.background=msgBg;
   document.getElementById('sim_result_card').style.display='block';
 
   drawSim(data, trueP, nsim);
 }
 
 function drawSim(data, trueP, nsim){
-  const canvas=document.getElementById('simCanvas');
-  const rowH=11;
-  const padT=35, padB=20, padL=12, padR=12;
-  const H=padT + nsim*rowH + padB;
+  var canvas=document.getElementById('simCanvas');
+  var rowH=11;
+  var padT=35, padB=22, padL=12, padR=12;
+  var H=padT+nsim*rowH+padB;
   canvas.height=H;
-  const W=canvas.parentElement.clientWidth||600;
+  var W=canvas.parentElement ? (canvas.parentElement.clientWidth||500) : 500;
+  if(W<200) W=200;
   canvas.width=W;
-  const ctx=canvas.getContext('2d');
+  var ctx=canvas.getContext('2d');
   ctx.clearRect(0,0,W,H);
 
-  // find range
-  let mn=trueP, mx=trueP;
-  data.forEach(d=>{mn=Math.min(mn,d.lo-0.005);mx=Math.max(mx,d.hi+0.005);});
+  var mn=trueP, mx=trueP;
+  data.forEach(function(d){
+    mn=Math.min(mn,d.lo-0.005);
+    mx=Math.max(mx,d.hi+0.005);
+  });
   mn=Math.max(0,mn); mx=Math.min(1,mx);
-  if(mn===mx){mn=Math.max(0,mn-0.1);mx=Math.min(1,mx+0.1);}
+  if(mn===mx){ mn=Math.max(0,mn-0.1); mx=Math.min(1,mx+0.1); }
 
-  const toX=v=>padL+(v-mn)/(mx-mn)*(W-padL-padR);
+  function toX(v){ return padL+(v-mn)/(mx-mn)*(W-padL-padR); }
 
-  // axis at top
-  ctx.strokeStyle='#e0e0e0'; ctx.lineWidth=1;
-  ctx.beginPath(); ctx.moveTo(padL,padT-5); ctx.lineTo(W-padR,padT-5); ctx.stroke();
-  ctx.font='9px system-ui'; ctx.textAlign='center'; ctx.fillStyle='#999';
-  const nt=5;
-  for(let i=0;i<=nt;i++){
-    const v=mn+i*(mx-mn)/nt;
-    const x=toX(v);
-    ctx.fillText((v*100).toFixed(1)+'%',x,13);
+  // x-axis labels at top
+  ctx.font='9px system-ui,sans-serif'; ctx.textAlign='center'; ctx.fillStyle='#999';
+  var nt=5;
+  for(var i=0;i<=nt;i++){
+    var v=mn+i*(mx-mn)/nt;
+    ctx.fillText((v*100).toFixed(1)+'%', toX(v), 12);
   }
 
   // draw CIs
-  data.forEach((d,i)=>{
-    const y=padT+i*rowH+rowH/2;
-    const xl=toX(d.lo), xh=toX(d.hi), xe=toX(d.ph);
-    const col=d.hit?'#27ae60':'#e74c3c';
+  data.forEach(function(d,i){
+    var y=padT+i*rowH+rowH/2;
+    var xl=toX(d.lo), xh=toX(d.hi), xe=toX(d.ph);
+    var col=d.hit?'#27ae60':'#e74c3c';
     ctx.strokeStyle=col; ctx.lineWidth=1.5;
     ctx.beginPath(); ctx.moveTo(xl,y); ctx.lineTo(xh,y); ctx.stroke();
-    [xl,xh].forEach(x=>{
+    [xl,xh].forEach(function(x){
       ctx.beginPath(); ctx.moveTo(x,y-3); ctx.lineTo(x,y+3); ctx.stroke();
     });
     ctx.fillStyle=col;
@@ -933,31 +973,19 @@ function drawSim(data, trueP, nsim){
   });
 
   // true p line
-  const tp=toX(trueP);
+  var tp=toX(trueP);
   ctx.strokeStyle='#1a6b9a'; ctx.lineWidth=2;
   ctx.setLineDash([5,3]);
-  ctx.beginPath(); ctx.moveTo(tp,18); ctx.lineTo(tp,H-5); ctx.stroke();
+  ctx.beginPath(); ctx.moveTo(tp,17); ctx.lineTo(tp,H-8); ctx.stroke();
   ctx.setLineDash([]);
-
-  // true p label
-  ctx.fillStyle='#1a6b9a'; ctx.font='bold 10px system-ui'; ctx.textAlign='center';
-  ctx.fillText('p = '+(trueP*100).toFixed(1)+'%', tp, 27);
+  ctx.fillStyle='#1a6b9a'; ctx.font='bold 10px system-ui,sans-serif'; ctx.textAlign='center';
+  ctx.fillText('p = '+(trueP*100).toFixed(1)+'%', tp, H-2);
 }
 
-// ── Init ─────────────────────────────────────────────────────
-window.addEventListener('load',()=>{
-  updateEx();
-});
-window.addEventListener('resize',()=>{
-  updateEx();
-});
+// ── Init ──────────────────────────────────────────────────────
+window.addEventListener('load', function(){ updateEx(); });
+window.addEventListener('resize', function(){ updateEx(); });
+window.addEventListener('orientationchange', function(){ setTimeout(updateEx, 200); });
 </script>
-
-<footer style="background:#2c3e50;color:#ccc;text-align:center;padding:1.5rem 1rem;font-size:.85rem;line-height:1.8;margin-top:2rem">
-  <div>Material complementar da disciplina de Pesquisa em Ciências da Saúde.</div>
-  <div>Universidade Estadual de Ciências da Saúde de Alagoas (UNCISAL)</div>
-  <div>Maceió, Alagoas, Brasil</div>
-  <div style="margin-top:.4rem;color:#aaa">© 2026</div>
-</footer>
 </body>
 </html>
